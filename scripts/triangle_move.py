@@ -1,23 +1,35 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 
 import rospy
-from aisec.msg import Triangle
+from geometry_msgs.msg import Twist
+import math
 
+def draw_equilateral_triangle():
+    rospy.init_node("draw_triangle_node")
+    pub = rospy.Publisher("cmd_vel", Twist, queue_size=10)
+    rate = rospy.Rate(10)  # Hz
 
+    forward_distance = 5.0  # Eşkenar üçgenin bir kenarının uzunluğu (örneğin 1 metre)
+    turn_angle = math.radians(60)  # Dönüş açısı (eşkenar üçgenin iç açısı) (örneğin 60 derece)
+    num_sides = 3  # Üçgenin toplam kenar sayısı
 
-def triangle_move():
-    rospy.init_node("triangle_move")
-    pub=rospy.Publisher("cmd_vel",Triangle)
-    speed_message=Triangle()#Type of speed message
-    speed_message.Linear.x=0.5#Speed of the robot
-    distance=5
-    displacement=0#Displacement value of the robot
-    t0=rospy.Time.now().to_sec()#Starting time as second types
-    while displacement<distance:
-        pub.publish(speed_message)
-        t1=rospy.Time.now().to_sec()#Current time to check robot's displacement value
-        displacement=(t1-t0)*speed_message.linear_x
-    speed_message.Linear.x=0
-    pub.publish(speed_message)
-    
-triangle_move()
+    for _ in range(num_sides):
+        # İleriye git
+        cmd_vel_msg = Twist()
+        cmd_vel_msg.linear.x = 0.5  # Örneğin, 0.2 m/s ilerleme hızı
+        cmd_vel_msg.angular.z = 0.0
+        pub.publish(cmd_vel_msg)
+        rospy.sleep(forward_distance / cmd_vel_msg.linear.x)
+
+        # Dön
+        cmd_vel_msg.linear.x = 0.0
+        cmd_vel_msg.angular.z = 0.5  # Örneğin, 0.2 rad/s dönme hızı
+        pub.publish(cmd_vel_msg)
+        rospy.sleep(turn_angle / cmd_vel_msg.angular.z)
+
+    # Durdur
+    cmd_vel_msg.linear.x = 0.0
+    cmd_vel_msg.angular.z = 0.0
+    pub.publish(cmd_vel_msg)
+
+draw_equilateral_triangle()
