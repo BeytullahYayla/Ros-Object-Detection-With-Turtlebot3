@@ -7,7 +7,14 @@ project(aisec)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  message_generation
+  actionlib_msgs
+  
+ 
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -64,7 +71,7 @@ add_message_files(FILES Triangle.msg)
 # )
 
 ## Generate added messages and services with any dependencies listed here
- #generate_messages(DEPENDENCIES actionlib_msgs)
+ generate_messages(DEPENDENCIES actionlib_msgs)
 #   DEPENDENCIES
 #   std_msgs  # Or other packages containing msgs
 # )
