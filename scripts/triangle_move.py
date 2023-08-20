@@ -1,35 +1,74 @@
 #!/usr/bin/env python3
-
 import rospy
-from geometry_msgs.msg import Twist
 import math
+from geometry_msgs.msg import Twist
+from aisec.msg import Triangle
+def move(distance):
+    velocity_publisher = rospy.Publisher('/cmd_vel', Triangle, queue_size=10)
+    vel_msg = Triangle()
 
-def draw_equilateral_triangle():
-    rospy.init_node("draw_triangle_node")
-    pub = rospy.Publisher("cmd_vel", Twist, queue_size=10)
-    rate = rospy.Rate(10)  # Hz
+    # İleri git
+    vel_msg.linear.x = 0.2  # Örneğin, 0.2 m/s hızında ileri git
+    vel_msg.linear.y = 0
+    vel_msg.linear.z = 0
 
-    forward_distance = 5.0  # Eşkenar üçgenin bir kenarının uzunluğu (örneğin 1 metre)
-    turn_angle = math.radians(60)  # Dönüş açısı (eşkenar üçgenin iç açısı) (örneğin 60 derece)
-    num_sides = 3  # Üçgenin toplam kenar sayısı
+    t0 = rospy.Time.now().to_sec()
+    current_distance = 0
 
-    for _ in range(num_sides):
-        # İleriye git
-        cmd_vel_msg = Twist()
-        cmd_vel_msg.linear.x = 0.5  # Örneğin, 0.2 m/s ilerleme hızı
-        cmd_vel_msg.angular.z = 0.0
-        pub.publish(cmd_vel_msg)
-        rospy.sleep(forward_distance / cmd_vel_msg.linear.x)
+    while current_distance < distance:
+        velocity_publisher.publish(vel_msg)
+        t1 = rospy.Time.now().to_sec()
+        current_distance = 0.2 * (t1 - t0)
 
-        # Dön
-        cmd_vel_msg.linear.x = 0.0
-        cmd_vel_msg.angular.z = 0.5  # Örneğin, 0.2 rad/s dönme hızı
-        pub.publish(cmd_vel_msg)
-        rospy.sleep(turn_angle / cmd_vel_msg.angular.z)
+    # Dur
+    vel_msg.linear.x = 0
+    velocity_publisher.publish(vel_msg)
 
-    # Durdur
-    cmd_vel_msg.linear.x = 0.0
-    cmd_vel_msg.angular.z = 0.0
-    pub.publish(cmd_vel_msg)
+def turn_robot(angle,direction):
+   
+    velocity_publisher = rospy.Publisher('/cmd_vel', Triangle, queue_size=10)
+    vel_msg = Triangle()
 
-draw_equilateral_triangle()
+    # Dön
+    if direction=="positive":
+        
+        vel_msg.angular.z = 0.5  # Örneğin, 0.5 rad/s hızında dön
+    elif direction=="negative":
+        vel_msg.angular.z=-0.5
+        
+    t0 = rospy.Time.now().to_sec()
+    current_angle = 0
+
+    while current_angle < angle:
+        velocity_publisher.publish(vel_msg)
+        t1 = rospy.Time.now().to_sec()
+        current_angle = 0.5 * (t1 - t0)
+
+    # Dur
+    vel_msg.angular.z= 0
+    velocity_publisher.publish(vel_msg)
+
+rospy.init_node('robot_movement_node', anonymous=True)
+
+
+try:
+    
+        
+        
+        move(1)  # 3 metre ileri git
+        rospy.sleep(1)  # 1 saniye bekle
+        turn_robot(math.radians(60),"negative")  # 120 derece dön (radyan cinsinden)
+        rospy.sleep(1)  # 1 saniye bekle
+        move(1)
+        turn_robot(math.radians(120),"positive")  
+        rospy.sleep(1)  # 1 saniye bekle
+        move(1)
+        rospy.sleep(1)  # 1 saniye bekle
+        turn_robot(math.radians(120),"positive")
+        rospy.sleep(1)  # 1 saniye bekle
+        move(1)     
+        rospy.sleep(1) 
+        
+        
+except rospy.ROSInterruptException:
+        print("Calisma Durdu")
