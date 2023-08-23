@@ -6,7 +6,7 @@ from aisec.msg import Triangle,Lidar
 class Laser():
     def __init__(self) -> None:
         rospy.init_node("laser")
-        rospy.Subscriber("scan",Lidar,callback=self.laserCallback)
+        rospy.Subscriber("scan",LaserScan,callback=self.laserCallback)
         self.pub=rospy.Publisher("cmd_vel",Triangle,queue_size=10)
         self.speed_message=Triangle()
         rospy.spin()
