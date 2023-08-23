@@ -1,12 +1,12 @@
 #! /usr/bin/env python3
 
 import rospy
-from  sensor_msgs.msg import LaserScan
-from aisec.msg import Triangle,Lidar
+from aisec.msg import Triangle,Lidar,Robot
 class Laser():
     def __init__(self) -> None:
         rospy.init_node("laser")
-        rospy.Subscriber("scan",LaserScan,callback=self.laserCallback)
+        rospy.Subscriber("scan",Lidar,callback=self.laserCallback)
+        rospy.Subscriber("robot_move",Robot,callback=self.robotMoveCallback)
         self.pub=rospy.Publisher("cmd_vel",Triangle,queue_size=10)
         self.speed_message=Triangle()
         rospy.spin()
@@ -25,11 +25,13 @@ class Laser():
         print(min_left,min_right,min_front,min_back)
         
         if min_front>1.0:
-            self.speed_message.linear.x=0.25
-            self.pub.publish(self.speed_message)
-        else:
+             self.speed_message.linear.x=0.25
+             self.pub.publish(self.speed_message)
+        if min_front<1.0:
             self.speed_message.linear.x=0
             self.pub.publish(self.speed_message)
+    
+        
             
         
 Laser()
