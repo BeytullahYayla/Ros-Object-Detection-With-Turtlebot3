@@ -51,7 +51,9 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
+
 add_message_files(FILES Triangle.msg Vector3.msg Lidar.msg Robot.msg)
+
 #   FILES
 #   Message1.msg
 #   Message2.msg
