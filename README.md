@@ -6,6 +6,9 @@
       * [Message Files](#message-files)
       * [Algorithm](#algorithm)
   *  [Laser Scanning](#laser-scanning)
+      * [Message Files](#message-files)
+      * [Algorithm](#algorithm)
+
   *  [Object Detection and Finding Geometry Center](#object-detection)
 
   # Draw Equilateral Triangle
@@ -56,6 +59,67 @@ In order to draw this triangle i have followed this steps:
  <li><b>rotate Function:</b> This function is used to rotate the robot by a specified angle. In our situation specified angle must be 120. The rotation is done using angular_speed to cover the specified angle using a loop. It stops the robot when the rotation is completed.</li>
  <li><b>Main Function:</b> The main() function initializes the ROS node, starts the publisher, and initiates the equilateral triangle drawing by calling the draw_equilateral_triangle function.</li>
 </ul>
+
+
+
+# Laser Scanning
+
+In laser scanning task our aim is to stop robot before crush to the obstacle. For this we need to create custom message file as type LaserScan under the sensor_msgs package. 
+
+## Lidar.msg
+
+This message file contains informations like angle_min, angle_max , scan_time and most importantly ranges values which we are going to use in this task. 
+
+```
+std_msgs/Header header
+float32 angle_min
+float32 angle_max
+float32 angle_increment
+float32 time_increment
+float32 scan_time
+float32 range_min
+float32 range_max
+float32[] ranges
+float32[] intensities
+
+```
+
+In ranges list each element specifies the distance of the measurement at an angle.
+
+```
+right_front=list(request.ranges[0:9])
+left_front=list(request.ranges[350:359])
+front=right_front+left_front
+left=list(request.ranges[80:100])
+right=list(request.ranges[260:280])
+back=list(request.ranges[170:190])
+min_left=min(left)
+min_right=min(right)
+min_back=min(back)
+min_front=min(front)
+```
+In this piece of code we are getting range values in order to control distance from the obstacle using ranges values in Lidar message. We need to acquire front range value to check distance of obstacle from the robot. Let me draw right_front, left_front and other range values on image.
+
+
+![Ranges](https://github.com/BeytullahYayla/Basic_Ros_Applications/assets/78471151/f0995694-f5f3-4cd9-a9b4-5ccbde15d3ea)
+
+Here are the values that returns the distance values of each range value.
+
+After that we check front distance because we would like to stop robot before crush to obstacle. If front value smaller than 1 then we will publish 0 speed value. Except this we want to move robot forward. 
+
+```
+        if min_front>1.0:
+            self.speed_message.linear.x=0.25
+            self.pub.publish(self.speed_message)
+        else:
+            self.speed_message.linear.x=0
+            self.pub.publish(self.speed_message)
+```
+Let we analyze results of this study in gazebo simulation environment that i created.
+
+### Result
+
+https://github.com/BeytullahYayla/Basic_Ros_Applications/assets/78471151/006f638a-3454-4fe4-81bd-61d774552011
 
 
 
