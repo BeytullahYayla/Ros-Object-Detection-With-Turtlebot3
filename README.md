@@ -115,6 +115,46 @@ After that we check front distance because we would like to stop robot before cr
             self.speed_message.linear.x=0
             self.pub.publish(self.speed_message)
 ```
+
+
+  <h1>Code Explanation</h1>
+
+   <h2>Initialization</h2>
+    <ul>
+        <li>The code starts by initializing a ROS node named "laser".</li>
+        <li>It sets up a subscriber to listen for LiDAR data on the "scan" topic.</li>
+        <li>It also prepares a publisher to send movement commands on the "cmd_vel" topic.</li>
+    </ul>
+
+   <h2>LiDAR Data Processing</h2>
+    <ul>
+        <li>When LiDAR data is received, the <code>laserCallback</code> function is triggered.</li>
+        <li>It extracts distance measurements in different directions (front, back, left, right) from the LiDAR data.</li>
+    </ul>
+
+   <h2>Obstacle Detection</h2>
+    <ul>
+        <li>It finds the closest obstacle in each direction (left, right, front, back).</li>
+        <li>It prints out these minimum distances.</li>
+    </ul>
+
+   <h2>Movement Control</h2>
+    <ul>
+        <li>If there's no obstacle within 1 meter in front of the robot, it sets the robot's forward speed to 0.25 m/s, allowing it to move forward.</li>
+        <li>If an obstacle is within 1 meter in front, it stops the robot by setting its forward speed to 0.</li>
+    </ul>
+
+   <h2>Node Continues Running</h2>
+    <ul>
+        <li>The node continues to listen for LiDAR data and respond accordingly.</li>
+    </ul>
+
+   <h2>Node Execution</h2>
+    <ul>
+        <li>The last line creates an instance of the <code>Laser</code> class, which starts the whole process.</li>
+    </ul>
+
+
 Let we analyze results of this study in gazebo simulation environment that i created.
 
 ### Result
