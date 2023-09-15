@@ -52,7 +52,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate messages in the 'msg' folder
 
-add_message_files(FILES Triangle.msg Vector3.msg Lidar.msg Robot.msg)
+add_message_files(FILES Triangle.msg Vector3.msg VisualData.msg)
 
 #   FILES
 #   Message1.msg

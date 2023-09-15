@@ -10,6 +10,9 @@
       * [Algorithm](#algorithm)
 
   *  [Object Detection and Finding Geometry Center](#object-detection)
+      * [Messag Files](#message-files)
+      * [Class Definition](#class-definition)
+
 
   # Draw Equilateral Triangle
 
@@ -120,6 +123,121 @@ Let we analyze results of this study in gazebo simulation environment that i cre
 ### Result
 
 https://github.com/BeytullahYayla/Basic_Ros_Applications/assets/78471151/006f638a-3454-4fe4-81bd-61d774552011
+
+
+
+# Object Detection and Finding Geometry Center
+
+
+In this task our aim is to find object's geometry center and move our robot towards detected object.
+
+
+## Message Files
+
+### VisualData.msg
+
+```
+
+std_msgs/Header header
+uint32 height
+uint32 width
+string encoding
+uint8 is_bigendian
+uint32 step
+uint8[] data
+
+```
+
+##  Class Definition
+
+<ul>
+  <li>
+    <b>__init__:</b> This is the constructor method. It initializes the ROS node, sets up publishers and subscribers, and initializes some variables.
+
+  </li>
+  <li>
+    <b>filterColor:</b> This method takes a grayscale image and filters it based on specified lower and upper color thresholds. It returns a binary mask highlighting the pixels within the specified color range.
+
+  </li>
+  <li>
+    <b>findGeometryCenter:</b> This method takes a binary mask and calculates the centroid (x, y coordinates) of the detected object.
+
+  </li>
+  <li>
+    <b>cameraCallback: </b>This method is a callback function for the RGB camera image. It converts the received image to grayscale, applies a color filter, and calculates the centroid of the detected object. Based on the object's position and distance, it adjusts the robot's speed and direction.
+  </li>
+  <li>
+    <b>laserCallback:</b> This method is a callback function for the lidar data. It processes the lidar ranges to get information about obstacles in different directions. It updates the self.min_front variable, which seems to represent the minimum distance in front of the robot.
+
+  </li>
+</ul>
+
+To filter object from scene first we need to convert image to gray format.
+```
+gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)# Convert image gray format in order to track color
+
+```
+For this task our object to track has gray color. So I defined lower and upper color values as follows:
+
+```
+lower_gray=np.array([30],dtype="uint8")
+upper_gray=np.array([150],dtype="uint8")
+
+
+```
+ After that i get mask with filterColor custom method that i created, we need to find moment of object and x,y points of geometry center to draw circle.
+ ```
+
+ mask=self.filterColor(gray,lower_gray,upper_gray)#Get proper mask extracted from image with lower and upper color values
+ h,w,c=image.shape
+ M=cv2.moments(mask)# Find moments from acquired mask
+ if M['m00']>0:# If there is a geometry center 
+            x,y=self.findGeometryCenter(mask)# find x and y points of object in mask
+
+```
+
+Then if we detect object we need to move robot towards to the object.
+
+```
+
+deviation=x-w/2# We would like to center camera. So we need to find deviation and turn right/left robot.
+if self.min_front>1.0:# If distance from object greater than 1 meter 
+                
+    self.speed_message.linear.x=0.25
+    self.speed_message.angular.z=-deviation/100#Taking into consideration to deviation, turn right/left robot 
+    self.pub.publish(self.speed_message)# publish speed message
+elif self.min_front<1.0:# If front distance smaller than 1 
+    self.speed_message.linear.x=0.0#Stop robot, we arrived at the destination
+    self.speed_message.angular.z=0.0
+    self.pub.publish(self.speed_message)
+cv2.circle(image,(x,y),5,(255,0,0),-1)#draw circle using x and y coordinates
+
+```
+
+ ![image](https://github.com/BeytullahYayla/Basic_Ros_Applications/assets/78471151/dce7eec8-f61f-442c-b3e2-e7ccfac0d641)
+ 
+In this part we check deviation and distance from object in order to prevent collision. We would like to stop robot when 1 meter remained to object. If min_front greater than 1, then move robot, and turn robot using deviation. If min_front smaller than 1 then we arrive at the destination. We need to stop. Finally we need to draw circle to the geometry center.
+
+```
+ elif M['m00']==0 or M['m00']<0:#If there is no object in scene that we want to track
+            self.speed_message.linear.x=0.0#Stop to the robot 
+            self.speed_message.linear.z=0.0
+            self.speed_message.angular.z=0.5#Turn left to the robot until find an object to track
+            self.pub.publish(self.speed_message)
+```
+
+If there is no object, stop robot and start turn robot until find an object to track setting angular.z=0.5. With this even if object can't detected by our camera we are looking for object in our environment to prevent zero division error in ROS.
+
+### Result
+
+https://github.com/BeytullahYayla/Basic_Ros_Applications/assets/78471151/e23f3c2e-9745-4d4a-b7db-9ca31de3292d
+
+
+
+
+
+
+
 
 
 
