@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 import rospy
 from aisec.msg import Triangle
+
 import math
 
 def move_distance(pub, linear_speed, distance):
     twist = Triangle()
-    twist.linear.x = linear_speed
+
+    
+    twist.linear.x= linear_speed
     current_distance = 0
     rate = rospy.Rate(10)  # 10 Hz
     t0=rospy.Time.now().to_sec()
@@ -23,6 +26,7 @@ def move_distance(pub, linear_speed, distance):
 def rotate(pub, angular_speed, angle):
     twist = Triangle()
     twist.angular.z = angular_speed
+
     current_angle = 0
     rate = rospy.Rate(10)  # 10 Hz
 
@@ -50,6 +54,7 @@ def main():
     side_length = 1.04  # Adjust as needed
 
     draw_equilateral_triangle(pub, side_length)
+  
 
 
 try:
