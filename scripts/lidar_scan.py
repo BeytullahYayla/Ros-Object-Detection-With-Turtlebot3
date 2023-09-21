@@ -2,11 +2,11 @@
 
 import rospy
 from aisec.msg import Triangle,Lidar,Robot
+
 class Laser():
     def __init__(self) -> None:
         rospy.init_node("laser")
         rospy.Subscriber("scan",Lidar,callback=self.laserCallback)
-        rospy.Subscriber("robot_move",Robot,callback=self.robotMoveCallback)
         self.pub=rospy.Publisher("cmd_vel",Triangle,queue_size=10)
         self.speed_message=Triangle()
         rospy.spin()
