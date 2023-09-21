@@ -236,7 +236,35 @@ https://github.com/BeytullahYayla/Basic_Ros_Applications/assets/78471151/e23f3c2
 
 
 ## Final Project
-The final results of the study as follows:
+In this step, nothing done special, i just updated to object_detection.py script in order to track red object. To execute this script you shoul follow this steps:
+<ul>
+ <li>
+ Open your terminal and go to the aisec path writing following command:
+
+```
+roscd aisec
+```
+  
+ </li>
+ <li>
+After that, we need a simulation environment to test our detection script. We call it by typing following command:
+  
+```
+roslaunch aisec empty_world.launch
+```
+
+ 
+ </li>
+<li>
+ Finally, all we need to do is execute detect_object script from new terminal.
+
+```
+rosrun  aisec detect_object.py
+```
+
+</li>
+</ul>
+The final results of the study will be as follows:
 
 https://github.com/BeytullahYayla/Basic_Ros_Applications/assets/78471151/89e50d36-4f93-43e0-bdad-dda48202bf24
 
