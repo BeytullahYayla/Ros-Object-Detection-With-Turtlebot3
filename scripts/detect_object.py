@@ -61,10 +61,10 @@ class NesneTanima():
         """
         
         image=self.cv_bridge.imgmsg_to_cv2(request,"bgr8")# First bridge image message to cv2
-        gray=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)# Convert image gray format in order to track color
-        lower_gray=np.array([30],dtype="uint8")
-        upper_gray=np.array([150],dtype="uint8")
-        mask=self.filterColor(gray,lower_gray,upper_gray)#Get proper mask extracted from image with lower and upper color values
+        hsv=cv2.cvtColor(image,cv2.COLOR_BGR2HSV)# Convert image gray format in order to track color
+        lower_red=np.array([0,150,150],dtype="uint8")
+        upper_red=np.array([10,255,255],dtype="uint8")
+        mask=self.filterColor(hsv,lower_red,upper_red)#Get proper mask extracted from image with lower and upper color values
         
         h,w,c=image.shape
         M=cv2.moments(mask)# Find moments from acquired mask
