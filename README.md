@@ -6,12 +6,14 @@
       * [Message Files](#message-files)
       * [Algorithm](#algorithm)
   *  [Laser Scanning](#laser-scanning)
-      * [Message Files](#message-files)
-      * [Algorithm](#algorithm)
+      * [Laser Scanning Message Files](#laser-scanning-message-files)
+      * [Laser Scanning Algorithm](#laser-scanning-algorithm)
 
   *  [Object Detection and Finding Geometry Center](#object-detection)
-      * [Messag Filese](#message-files)
+      * [Object Detection Message Filese](#object-detection-message-files)
       * [Class Definition](#class-definition)
+   
+  *  [Final Project](#final-project)
 
 
   # Draw Equilateral Triangle
@@ -65,11 +67,11 @@ In order to draw this triangle i have followed this steps:
 
 
 
-# Laser Scanning
+## Laser Scanning Message Files
 
 In laser scanning task our aim is to stop robot before crush to the obstacle. For this we need to create custom message file as type LaserScan under the sensor_msgs package. 
 
-## Lidar.msg
+### Lidar.msg
 
 This message file contains informations like angle_min, angle_max , scan_time and most importantly ranges values which we are going to use in this task. 
 
@@ -86,7 +88,7 @@ float32[] ranges
 float32[] intensities
 
 ```
-
+## Laser Scanning Algorithm
 In ranges list each element specifies the distance of the measurement at an angle.
 
 ```
@@ -132,7 +134,7 @@ https://github.com/BeytullahYayla/Basic_Ros_Applications/assets/78471151/006f638
 In this task our aim is to find object's geometry center and move our robot towards detected object.
 
 
-## Message Files
+## Object Detection Message Files
 
 ### VisualData.msg
 
@@ -232,6 +234,11 @@ If there is no object, stop robot and start turn robot until find an object to t
 
 https://github.com/BeytullahYayla/Basic_Ros_Applications/assets/78471151/e23f3c2e-9745-4d4a-b7db-9ca31de3292d
 
+
+## Final Project
+The final results of the study as follows:
+
+https://github.com/BeytullahYayla/Basic_Ros_Applications/assets/78471151/89e50d36-4f93-43e0-bdad-dda48202bf24
 
 
 
